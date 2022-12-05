@@ -13,6 +13,7 @@ import { TypeOrmConfigModule } from './config/database/typeorm-config.module';
 import { TypeOrmConfigService } from './config/database/typeorm-config.service';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserAuthModule } from './modules/users/users.module';
+import { CatModule } from './modules/cat/cat.module';
 
 @Module({
   imports: [
@@ -34,6 +35,8 @@ import { UserAuthModule } from './modules/users/users.module';
       },
     ]),
     UserAuthModule,
+    CatModule,
+    CatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
