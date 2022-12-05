@@ -1,4 +1,4 @@
 export interface UserPayloadInterface {
-  id: string;
+  id: number;
   email: string;
 }
