@@ -1,16 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UserRepository } from './repository/user.repository';
-import { UserRegistrationDto } from './dto/user-registration.dto';
-import { UserLoginDto } from './dto/user-login.dto';
+import * as bcrypt from 'bcrypt';
 import { UserPayloadInterface } from 'src/common/interfaces/user-payload.interface';
-import { UserProfileDto } from './dto/user-profile-update.dto';
-import { MediaManagerService } from '../media-manager/media-manager.service';
-import { UserEntity } from './entities/user.entity';
 import { MediaManagerEntity } from '../media-manager/entities/media-manager.entity';
-import { ConfigService } from '@nestjs/config';
+import { MediaManagerService } from '../media-manager/media-manager.service';
 import { UserChangePasswordDto } from './dto/change-password.dto';
+import { UserLoginDto } from './dto/user-login.dto';
+import { UserProfileDto } from './dto/user-profile-update.dto';
+import { UserRegistrationDto } from './dto/user-registration.dto';
+import { UserEntity } from './entities/user.entity';
+import { UserRepository } from './repository/user.repository';
 
 @Injectable()
 export class UserAuthService {

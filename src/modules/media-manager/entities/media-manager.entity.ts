@@ -1,10 +1,3 @@
-import {
-  IsEmail,
-  IsEmpty,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import {
   Column,
