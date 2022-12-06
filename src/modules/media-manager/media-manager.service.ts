@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserPayloadInterface } from 'src/common/interfaces/user-payload.interface';
 import { CreateMediaManagerDto } from './dto/create-media-manager.dto';
@@ -10,11 +11,14 @@ export class MediaManagerService {
   constructor(
     @InjectRepository(MediaManagerRepository)
     private mediaManagerRepository: MediaManagerRepository,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(file: any, userPayload: UserPayloadInterface) {
     const fileReponse = {
-      path: file.path,
+      url: `${this.configService.get('IMAGE_BASE')}/api/media-manager/${
+        file.filename
+      }`,
       name: file.filename,
       mimetype: file.mimetype,
       userId: userPayload.id,

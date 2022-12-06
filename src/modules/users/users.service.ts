@@ -5,12 +5,19 @@ import { UserRepository } from './repository/user.repository';
 import { UserRegistrationDto } from './dto/user-registration.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserPayloadInterface } from 'src/common/interfaces/user-payload.interface';
+import { UserProfileDto } from './dto/user-profile-update.dto';
+import { MediaManagerService } from '../media-manager/media-manager.service';
+import { UserEntity } from './entities/user.entity';
+import { MediaManagerEntity } from '../media-manager/entities/media-manager.entity';
+import { ConfigService } from '@nestjs/config';
+import { UserChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UserAuthService {
   constructor(
     private readonly userReposity: UserRepository,
     private jwtService: JwtService,
+    private readonly mediaManagerService: MediaManagerService,
   ) {}
 
   //local Registration of user
@@ -108,5 +115,96 @@ export class UserAuthService {
     }
 
     return user;
+  }
+
+  async profileUpdate(
+    userProfileDto: UserProfileDto,
+    file: any,
+    userPayload: UserPayloadInterface,
+  ) {
+    let media;
+    const user = await this.userReposity.findOne({
+      where: { id: userPayload.id },
+    });
+
+    if (!user) {
+      throw new BadRequestException('This user is not registered.');
+    }
+
+    if (file) {
+      media = await this.mediaManagerService.create(file, userPayload);
+    }
+
+    userProfileDto['image'] = media.id;
+    delete userProfileDto.profileImage;
+
+    const data = await this.userReposity
+      .createQueryBuilder('user')
+      .update(UserEntity)
+      .set(userProfileDto)
+      .where('id = :id', { id: userPayload.id })
+      .execute();
+
+    return data.affected > 0 ? 'Raw Updated' : 'Something went wrong';
+  }
+
+  async getProfile(userPayload: UserPayloadInterface) {
+    const user = await this.userReposity
+      .createQueryBuilder('user')
+      .leftJoinAndMapOne(
+        'user.image',
+        MediaManagerEntity,
+        'media',
+        'user.image = media.id',
+      )
+      .where('user.id = :id', { id: userPayload.id })
+      .select([
+        'user.id',
+        'user.firstName',
+        'user.middleName',
+        'user.lastName',
+        'media.id',
+        'media.name',
+        'media.url',
+      ])
+      .getOne();
+
+    return user;
+  }
+
+  async changePassword(
+    userChangePasswordDto: UserChangePasswordDto,
+    userPayload: UserPayloadInterface,
+  ) {
+    const user = await this.userReposity.findOne({
+      where: { id: userPayload.id },
+    });
+
+    if (!user) {
+      throw new BadRequestException('This user is not registered.');
+    }
+
+    const isMatch = await bcrypt.compare(
+      userChangePasswordDto.currentPassword,
+      user?.password,
+    );
+
+    if (!isMatch) {
+      throw new BadRequestException('password doesnt match');
+    }
+
+    userChangePasswordDto['newPassword'] = bcrypt.hashSync(
+      userChangePasswordDto.newPassword,
+      10,
+    );
+
+    const data = await this.userReposity
+      .createQueryBuilder('user')
+      .update(UserEntity)
+      .set({ password: userChangePasswordDto.newPassword })
+      .where('id = :id', { id: userPayload.id })
+      .execute();
+
+    return data.affected > 0 ? 'Password Updated' : 'Something went wrong';
   }
 }

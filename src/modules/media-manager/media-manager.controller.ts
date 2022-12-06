@@ -1,19 +1,13 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
+  Post,
+  Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
-  UploadedFile,
-  Res,
 } from '@nestjs/common';
-import { MediaManagerService } from './media-manager.service';
-import { CreateMediaManagerDto } from './dto/create-media-manager.dto';
-import { UpdateMediaManagerDto } from './dto/update-media-manager.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -21,20 +15,22 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/modules/users/guards/jwt.guard';
-import LocalFilesInterceptor from 'src/common/interceptors/local-files.interceptor';
-import { imageFileFilter } from 'src/engine/utils';
-import { UserPayloadInterface } from 'src/common/interfaces/user-payload.interface';
 import { UserPayload } from 'src/common/decorators/user.payload.decorator';
+import LocalFilesInterceptor from 'src/common/interceptors/local-files.interceptor';
+import { UserPayloadInterface } from 'src/common/interfaces/user-payload.interface';
+import { imageFileFilter } from 'src/engine/utils';
+import { JwtAuthGuard } from 'src/modules/users/guards/jwt.guard';
+import { CreateMediaManagerDto } from './dto/create-media-manager.dto';
+import { MediaManagerService } from './media-manager.service';
 
 @ApiTags('Media Manager')
-@ApiBearerAuth('jwt')
-// GUARDS
-@UseGuards(JwtAuthGuard)
 @Controller('media-manager')
 export class MediaManagerController {
   constructor(private readonly mediaManagerService: MediaManagerService) {}
 
+  @ApiBearerAuth('jwt')
+  // GUARDS
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({

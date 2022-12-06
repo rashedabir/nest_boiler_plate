@@ -9,6 +9,8 @@ import { UserAuthService } from './users.service';
 import { UserRepository } from './repository/user.repository';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
+import { MediaManagerService } from '../media-manager/media-manager.service';
+import { MediaManagerRepository } from '../media-manager/repository/media-manager.repository';
 
 @Module({
   imports: [
@@ -25,6 +27,13 @@ import { LocalStrategy } from './strategy/local.strategy';
     }),
   ],
   controllers: [UserAuthController],
-  providers: [UserAuthService, UserRepository, JwtStrategy, LocalStrategy],
+  providers: [
+    UserAuthService,
+    MediaManagerService,
+    UserRepository,
+    JwtStrategy,
+    LocalStrategy,
+    MediaManagerRepository,
+  ],
 })
 export class UserAuthModule {}

@@ -27,7 +27,7 @@ export class MediaManagerEntity {
   name: string;
 
   @Column({ type: 'varchar' })
-  path: string;
+  url: string;
 
   @Column({ type: 'varchar' })
   mimetype: string;
