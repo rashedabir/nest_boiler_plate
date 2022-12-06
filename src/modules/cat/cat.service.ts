@@ -3,6 +3,7 @@ import { FilterDataDto } from 'src/common/dtos/filter-data.dto';
 import { Pagination } from 'src/common/interfaces/pagination.interface';
 import { UserPayloadInterface } from 'src/common/interfaces/user-payload.interface';
 import { Brackets } from 'typeorm';
+import { UserEntity } from '../users/entities/user.entity';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { CatEntity } from './entities/cat.entity';
@@ -32,7 +33,12 @@ export class CatService {
 
     const [result, total] = await this.catRepository
       .createQueryBuilder('cat')
-      .leftJoinAndSelect('cat.user', 'user')
+      .leftJoinAndMapOne(
+        'cat.userId',
+        UserEntity,
+        'user',
+        'cat.userId = user.id',
+      )
       .where('cat.user = :user', { user: userPayload.id })
       .andWhere(
         new Brackets((qb) => {
@@ -73,7 +79,12 @@ export class CatService {
   async findOne(id: number) {
     const data = await this.catRepository
       .createQueryBuilder('cat')
-      .leftJoinAndSelect('cat.user', 'user')
+      .leftJoinAndMapOne(
+        'cat.userId',
+        UserEntity,
+        'user',
+        'cat.userId = user.id',
+      )
       .where('cat.id = :id', { id: id })
       .select(['cat', 'user.id', 'user.email'])
       .getOne();
