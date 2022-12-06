@@ -14,9 +14,14 @@ import { TypeOrmConfigService } from './config/database/typeorm-config.service';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserAuthModule } from './modules/users/users.module';
 import { CatModule } from './modules/cat/cat.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { MediaManagerModule } from './modules/media-manager/media-manager.module';
 
 @Module({
   imports: [
+    MulterModule.register({
+      dest: './uploadedFiles',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -36,7 +41,7 @@ import { CatModule } from './modules/cat/cat.module';
     ]),
     UserAuthModule,
     CatModule,
-    CatModule,
+    MediaManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

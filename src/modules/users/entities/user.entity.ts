@@ -1,8 +1,6 @@
-import { CatEntity } from 'src/modules/cat/entities/cat.entity';
 import {
   Column,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,8 +28,8 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @OneToMany(() => CatEntity, (cat) => cat.user, { eager: true })
-  cats: CatEntity[];
+  @Column({ type: 'int', nullable: true })
+  image: number;
 
   @Column({ type: 'timestamp', nullable: false, default: () => 'NOW()' })
   createdAt: string;

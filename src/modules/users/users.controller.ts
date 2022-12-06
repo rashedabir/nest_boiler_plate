@@ -35,6 +35,7 @@ export class UserAuthController {
   @Post('login')
   async login(@Body() userLoginDto: UserLoginDto) {
     const userData = await this.userAuthService.userLogin(userLoginDto);
+
     return { message: 'successful', result: userData };
   }
 }

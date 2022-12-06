@@ -1,3 +1,10 @@
+import {
+  IsEmail,
+  IsEmpty,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import {
   Column,
@@ -8,8 +15,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('cat')
-export class CatEntity {
+@Entity('media_manager')
+export class MediaManagerEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     comment: 'Primary id for the table',
@@ -18,6 +25,12 @@ export class CatEntity {
 
   @Column({ type: 'varchar' })
   name: string;
+
+  @Column({ type: 'varchar' })
+  path: string;
+
+  @Column({ type: 'varchar' })
+  mimetype: string;
 
   @Column({ type: 'int', nullable: false })
   userId: number;
